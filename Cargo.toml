@@ -1,0 +1,10 @@
+[package]
+name = "hello-rocket"
+version = "0.1.0"
+authors = ["piaohua <twopiao7@gmail.com>"]
+workspace = "../Rocket/"
+publish = false
+
+[dependencies]
+rocket = { path = "../Rocket/core/lib" }
+rocket_codegen = { path = "../Rocket/core/codegen" }
