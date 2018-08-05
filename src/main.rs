@@ -5,18 +5,29 @@ extern crate rocket_contrib;
 extern crate rocket;
 
 mod files;
+
 use rocket::Request;
-use rocket::response::Redirect;
+//use rocket::response::Redirect;
 use rocket_contrib::{Template};
 
-#[get("/")]
-fn index() -> Redirect {
-    Redirect::to("/hello/Unknown")
-}
+use std::io;
+use std::path::{Path, PathBuf};
 
-#[get("/hello/<name>")]
-fn hello(name: String) -> String {
-    name
+use rocket::response::NamedFile;
+
+//#[get("/")]
+//fn index() -> Redirect {
+//    Redirect::to("/hello/Unknown")
+//}
+
+//#[get("/hello/<name>")]
+//fn hello(name: String) -> String {
+//    name
+//}
+
+#[get("/")]
+fn index() -> io::Result<NamedFile> {
+    NamedFile::open("static/index.html")
 }
 
 #[catch(404)]
@@ -26,11 +37,17 @@ fn not_found(req: &Request) -> Template {
     Template::render("error/404", &map)
 }
 
+#[get("/<file..>")]
+fn static_files(file: PathBuf) -> Option<NamedFile> {
+    NamedFile::open(Path::new("static/").join(file)).ok()
+}
+
 fn rocket() -> rocket::Rocket {
     rocket::ignite()
         .mount("/", routes![
-               files::files, files::delete, files::down,
-               index, hello])
+               files::files, files::delete,
+               files::download, files::upload,
+               index, static_files])
         .attach(Template::fairing())
         .catch(catchers![not_found])
 }
