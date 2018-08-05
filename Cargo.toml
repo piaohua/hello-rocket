@@ -8,6 +8,7 @@ publish = false
 [dependencies]
 rocket = { path = "../Rocket/core/lib" }
 rocket_codegen = { path = "../Rocket/core/codegen" }
+walkdir = "2"
 
 [dependencies.rocket_contrib]
 path = "../Rocket/contrib/lib"
