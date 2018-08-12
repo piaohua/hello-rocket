@@ -5,11 +5,31 @@ use std::io::Error;
 //use std::env;
 use std::path::Path;
 
+use rocket_contrib::{Template};
+
+#[derive(Serialize)]
+struct TemplateContext {
+    title: &'static str,
+    //name: Option<String>,
+    items: Vec<&'static str>,
+    upload: &'static str,
+    delete: &'static str,
+    download: &'static str,
+}
+
 #[get("/files")]
-fn files() -> String {
+fn files() -> Template {
     let _ = file_list();
     let _ = walk_count();
-    format!("file list")
+    //format!("file list")
+    Template::render("files", &TemplateContext{
+        title: "File List",
+        //name: Some(name),
+        items: vec!["One", "Two", "Three"],
+        upload: "upload",
+        delete: "delete",
+        download: "download",
+    })
 }
 
 fn file_list() -> Result<(), Error> {
